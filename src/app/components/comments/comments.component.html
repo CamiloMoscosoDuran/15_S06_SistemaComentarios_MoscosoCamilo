@@ -1,0 +1,94 @@
+<div class="comments-container">
+  <div class="comments-layout">
+    <!-- Sección del formulario (Izquierda) -->
+    <section class="formulario-section">
+      <h2>Crear Nuevo Comentario</h2>
+      <form [formGroup]="formulario" (ngSubmit)="crearComentario()" class="form">
+        <!-- Campo Nombre -->
+        <div class="form-group">
+          <label for="nombre">Nombre</label>
+          <input
+            type="text"
+            id="nombre"
+            formControlName="name"
+            placeholder="Ingresa tu nombre"
+            class="input"
+          />
+          <span class="error" *ngIf="nombre?.invalid && nombre?.touched">
+            El nombre debe tener al menos 3 caracteres
+          </span>
+        </div>
+
+        <!-- Campo Comentario -->
+        <div class="form-group">
+          <label for="comentario">Comentario</label>
+          <textarea
+            id="comentario"
+            formControlName="body"
+            placeholder="Escribe tu comentario aquí..."
+            rows="4"
+            class="textarea"
+          ></textarea>
+          <span class="error" *ngIf="comentario?.invalid && comentario?.touched">
+            El comentario debe tener al menos 5 caracteres
+          </span>
+        </div>
+
+        <!-- Botón Enviar -->
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="formulario.invalid || cargando()"
+        >
+          <span *ngIf="!cargando()">📤 Enviar Comentario</span>
+          <span *ngIf="cargando()">Enviando...</span>
+        </button>
+      </form>
+
+      <!-- Mensaje de confirmación -->
+      <div *ngIf="mensajeExito()" class="alert alert-success">
+        ✅ {{ mensajeExito() }}
+      </div>
+    </section>
+
+    <!-- Sección de comentarios (Derecha) -->
+    <section class="comentarios-section">
+    <div class="header-comentarios">
+      <h2>Comentarios</h2>
+      <span class="contador">📊 Total: {{ cantidadComentarios() }}</span>
+    </div>
+
+    <!-- Indicador de carga -->
+    <div *ngIf="cargando() && comentarios().length === 0" class="loading">
+      ⏳ Cargando comentarios...
+    </div>
+
+    <!-- Lista de comentarios -->
+    <div *ngIf="!cargando() && comentarios().length > 0" class="comentarios-list">
+      <article
+        *ngFor="let comentario of comentarios()"
+        class="comentario-card"
+      >
+        <div class="comentario-header">
+          <h3 class="comentario-nombre">{{ comentario.name }}</h3>
+          <span class="comentario-id">#{{ comentario.id }}</span>
+        </div>
+        <p class="comentario-body">{{ comentario.body }}</p>
+        <footer class="comentario-footer">
+          <span *ngIf="comentario.createdDate" class="comentario-fecha">
+            📅 {{ comentario.createdDate }}
+          </span>
+          <span *ngIf="comentario.email" class="comentario-email">
+            📧 {{ comentario.email }}
+          </span>
+        </footer>
+      </article>
+    </div>
+
+    <!-- Mensaje cuando no hay comentarios -->
+    <div *ngIf="!cargando() && comentarios().length === 0" class="empty-state">
+      <p>📝 No hay comentarios aún. ¡Sé el primero en comentar!</p>
+    </div>
+    </section>
+  </div>
+</div>
